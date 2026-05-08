@@ -8,34 +8,35 @@ class VideoStream:
 		self.frameNum = 0
 		
 	def nextFrame(self):
-		"""Get next frame."""
-		# Buffer para armazenar o quadro atual
+		# GET THE NEXT FRAME
+
+		# BUFFER USED TO STORE THE CURRENT FRAME
 		frame_data = b""
 		
-		# Procurar pelo marcador de início de quadro (SOI)
+		# SEARCH FOR THE START OF IMAGE (SOI) MARKER
 		byte = self.file.read(1)
 		while byte:
 			frame_data += byte
-			# Verificar se é o marcador de início de quadro
-			if frame_data[-2:] == b'\xFF\xD8':  # Encontrou SOI
+
+			# CHECK WHETHER THE START OF IMAGE MARKER WAS FOUND
+			if frame_data[-2:] == b'\xFF\xD8':  # SOI FOUND
 				break
 			byte = self.file.read(1)
 		
-		# Continuar lendo até encontrar o marcador de final de quadro (EOI)
+		# CONTINUE READING UNTIL THE END OF IMAGE (EOI) MARKER IS FOUND
 		while byte:
 			byte = self.file.read(1)
 			if not byte:
 				break
 			frame_data += byte
-			# Verificar se é o marcador de final de quadro
-			if frame_data[-2:] == b'\xFF\xD9':  # Encontrou EOI
+
+			# CHECK WHETHER THE END OF IMAGE MARKER WAS FOUND
+			if frame_data[-2:] == b'\xFF\xD9':  # EOI FOUND
 				self.frameNum += 1
 				break
 
 		return frame_data if frame_data else None
 		
 	def frameNbr(self):
-		"""Get frame number."""
+		# RETURN THE FRAME NUMBER
 		return self.frameNum
-	
-	
